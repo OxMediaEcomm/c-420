@@ -1,4 +1,4 @@
-# Contributing to Schwiftyy Brain Starter
+# Contributing to C-420
 
 Thanks for considering a contribution. This is a community starter kit for Claude Code, not a single-maintainer product, so improvements that make it more useful as a *starting point* for other people are the goal (not improvements that make it more specific to any one person's setup).
 

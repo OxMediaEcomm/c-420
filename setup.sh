@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Schwiftyy Brain Starter — one-command bootstrap
+# C-420 — one-command bootstrap
 # Usage: ./setup.sh
 #
 # POSIX sh compatible: works under Git Bash on Windows, and bash/zsh/dash on
@@ -10,7 +10,7 @@ set -eu
 # --- locate this script's own directory (the source to copy FROM) ----------
 SOURCE_DIR=$(cd "$(dirname "$0")" && pwd)
 
-echo "=== Schwiftyy Brain Starter Setup ==="
+echo "=== C-420 Setup ==="
 echo ""
 echo "Source: $SOURCE_DIR"
 echo ""

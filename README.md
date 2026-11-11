@@ -1,4 +1,4 @@
-# Schwiftyy Brain Starter
+# C-420
 
 A complete, working Claude Code "brain" you can clone and make your own: a CLAUDE.md config, a 3-store memory architecture, dozens of agents, and a full library of skills covering engineering, design, research, and business workflows.
 

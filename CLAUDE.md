@@ -1,4 +1,4 @@
-# Schwiftyy Brain Starter — Claude Code Config
+# C-420 — Claude Code Config
 
 **Default Model: Sonnet** — Always start sessions on Sonnet 5. Never launch with or default to Opus. User switches manually if needed.
 
