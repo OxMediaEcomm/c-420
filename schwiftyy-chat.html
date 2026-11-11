@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schwiftyy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --panel: #14141c;
+    --border: #262635;
+    --text: #e8e8f0;
+    --muted: #8888a0;
+    --accent: #7c5cff;
+    --accent-soft: #2a2140;
+    --user-bubble: #1e1e2e;
+    --code-bg: #0d0d14;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-size: 16px;
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  header h1 .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #3ddc84;
+    box-shadow: 0 0 6px #3ddc84;
+  }
+  header .meta { font-size: 12px; color: var(--muted); }
+  header button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  header button:hover { color: var(--text); border-color: var(--accent); }
+
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .msg { max-width: 75%; }
+  .msg.user { align-self: flex-end; }
+  .msg.assistant { align-self: flex-start; }
+  .bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    line-height: 1.5;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .msg.user .bubble { background: var(--user-bubble); border: 1px solid var(--border); }
+  .msg.assistant .bubble { background: var(--panel); border: 1px solid var(--accent-soft); }
+  .msg.assistant .bubble.streaming::after {
+    content: '▍';
+    animation: blink 1s step-start infinite;
+    color: var(--accent);
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .bubble p { margin: 0 0 8px; }
+  .bubble p:last-child { margin-bottom: 0; }
+  .bubble pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    font-size: 13px;
+  }
+  .bubble code {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 13px;
+  }
+  .bubble :not(pre) > code {
+    background: var(--code-bg);
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  #composer {
+    border-top: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  #input {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    max-height: 160px;
+    line-height: 1.4;
+  }
+  #input:focus { outline: none; border-color: var(--accent); }
+  #send {
+    background: var(--accent);
+    border: none;
+    color: white;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  #send:disabled { opacity: 0.4; cursor: not-allowed; }
+  #send:hover:not(:disabled) { filter: brightness(1.1); }
+
+  .empty-state {
+    margin: auto;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .empty-state .big { font-size: 20px; color: var(--text); margin-bottom: 8px; font-weight: 600; }
+
+  #error-banner {
+    display: none;
+    background: #3a1a1a;
+    border-bottom: 1px solid #5a2a2a;
+    color: #ff8a8a;
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="dot"></span> Schwiftyy</h1>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span class="meta" id="status-text">qwen2.5:14b, local</span>
+    <button id="clear-btn">Clear chat</button>
+  </div>
+</header>
+<div id="error-banner"></div>
+<div id="messages">
+  <div class="empty-state" id="empty-state">
+    <div class="big">What's up?</div>
+    <div>Talking straight to Ollama, no middleman. Chat history stays in this browser only.</div>
+  </div>
+</div>
+<div id="composer">
+  <textarea id="input" placeholder="Message Schwiftyy..." rows="1"></textarea>
+  <button id="send" title="Send">&#8593;</button>
+</div>
+
+<script>
+const OLLAMA_URL = 'http://127.0.0.1:11434/api/chat';
+const MODEL = 'schwiftyy';
+const STORAGE_KEY = 'schwiftyy-chat-history';
+
+const messagesEl = document.getElementById('messages');
+const inputEl = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const clearBtn = document.getElementById('clear-btn');
+const emptyState = document.getElementById('empty-state');
+const errorBanner = document.getElementById('error-banner');
+
+let history = [];
+try {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) history = JSON.parse(saved);
+} catch (e) { /* ignore corrupt storage */ }
+
+function saveHistory() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); } catch (e) { /* storage full or blocked, non-fatal */ }
+}
+
+function renderAll() {
+  messagesEl.innerHTML = '';
+  if (history.length === 0) {
+    messagesEl.appendChild(emptyState);
+    return;
+  }
+  for (const msg of history) {
+    appendBubble(msg.role, msg.content, false);
+  }
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function appendBubble(role, content, isStreaming) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble' + (isStreaming ? ' streaming' : '');
+  bubble.innerHTML = window.marked ? marked.parse(content || '') : (content || '');
+  wrap.appendChild(bubble);
+  messagesEl.appendChild(wrap);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return bubble;
+}
+
+function showError(text) {
+  errorBanner.textContent = text;
+  errorBanner.style.display = text ? 'block' : 'none';
+}
+
+function autoResize() {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + 'px';
+}
+inputEl.addEventListener('input', autoResize);
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  showError('');
+  inputEl.value = '';
+  autoResize();
+  sendBtn.disabled = true;
+
+  history.push({ role: 'user', content: text });
+  saveHistory();
+  renderAll();
+
+  const assistantBubble = appendBubble('assistant', '', true);
+  let fullReply = '';
+
+  try {
+    const res = await fetch(OLLAMA_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: history,
+        stream: true
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error('Ollama returned ' + res.status + '. Is "ollama serve" running?');
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const chunk = JSON.parse(line);
+        if (chunk.message && chunk.message.content) {
+          fullReply += chunk.message.content;
+          assistantBubble.innerHTML = window.marked ? marked.parse(fullReply) : fullReply;
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+      }
+    }
+    assistantBubble.classList.remove('streaming');
+    history.push({ role: 'assistant', content: fullReply });
+    saveHistory();
+  } catch (err) {
+    assistantBubble.classList.remove('streaming');
+    showError('Connection failed: ' + err.message + '. Make sure Ollama is running on 127.0.0.1:11434.');
+    if (history[history.length - 1] && history[history.length - 1].role === 'user') {
+      history.pop();
+      saveHistory();
+    }
+  } finally {
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+clearBtn.addEventListener('click', () => {
+  if (confirm('Clear the whole conversation? This only affects this browser, nothing on disk.')) {
+    history = [];
+    saveHistory();
+    renderAll();
+  }
+});
+
+renderAll();
+inputEl.focus();
+</script>
+</body>
+</html>

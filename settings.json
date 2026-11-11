@@ -1,0 +1,76 @@
+{
+  "model": "claude-sonnet-5",
+  "effortLevel": "medium",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ${CLAUDE_CONFIG_DIR}/statusline.sh",
+    "padding": 0
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_CONFIG_DIR}/hooks/session-end.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_CONFIG_DIR}/skills/continuous-learning-v2/hooks/observe.sh pre"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_CONFIG_DIR}/skills/continuous-learning-v2/hooks/observe.sh post"
+          },
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_CONFIG_DIR}/hooks/context-guard.mjs"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "context-mode": {
+      "command": "<PATH_TO_YOUR_CONTEXT_MODE_CLI>/context-mode.cmd",
+      "type": "stdio"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "type": "stdio"
+    },
+    "magicui": {
+      "command": "npx",
+      "args": ["-y", "@magicuidesign/mcp@latest"],
+      "type": "stdio"
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "type": "stdio"
+    },
+    "21st-dev": {
+      "command": "${CLAUDE_CONFIG_DIR}/mcp-servers/21st-magic-wrapper.cmd",
+      "type": "stdio"
+    },
+    "supabase": {
+      "command": "${CLAUDE_CONFIG_DIR}/mcp-servers/supabase-mcp-wrapper.cmd",
+      "type": "stdio"
+    }
+  }
+}
