@@ -9,14 +9,14 @@ description: >-
   Pairs with pptx-author (Step 2) and pptx-from-layouts (Step 3).
 ---
 
-# Step 1 — Profile (pptx-profile)
+# Step 1: Profile (pptx-profile)
 
 Turn any `.pptx` into a **map of its real layouts** so the next steps can target
 them precisely. This is the answer to *"what layouts does my template actually
 have, and what is each one for?"*
 
 ```text
-  STEP 1 — PROFILE          STEP 2 — AUTHOR           STEP 3 — RENDER
+  STEP 1, PROFILE          STEP 2, AUTHOR           STEP 3, RENDER
   pptx-profile              pptx-author               pptx-from-layouts
   ───────────────           ───────────────           ─────────────────
   your-template.pptx        slides.md (+ [HINT:])     slides.md + config
@@ -55,17 +55,17 @@ output basename (defaults to the filename).
 ## What the catalog gives you
 
 The catalog's **Hintable layouts** table lists only layouts the engine knows how
-to populate — every name there is a safe `[HINT:]` value. A collapsed section
+to populate, every name there is a safe `[HINT:]` value. A collapsed section
 lists *all* raw layouts in the file for reference. Each row shows the layout
 index, the exact hint name to copy, its placeholders (e.g. `picture`, `body`,
 `center-title`), and a one-line "when to use".
 
 ## Then what
 
-1. **Step 2 — author:** open the catalog, write `slides.md` using
+1. **Step 2, author:** open the catalog, write `slides.md` using
    `[HINT: layout_name]` per slide, and lint with
    `pptx-author/scripts/lint_hints.py slides.md --config your-template-config.json`.
-2. **Step 3 — render:**
+2. **Step 3, render:**
    `pptx-from-layouts/scripts/generate.py slides.md -o deck.pptx
    --template your-template.pptx --config your-template-config.json --validate`.
 

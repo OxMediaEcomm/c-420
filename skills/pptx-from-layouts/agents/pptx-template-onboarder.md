@@ -33,16 +33,16 @@ self-configure their `PYTHONPATH`, so invoke them directly with `python`.
    This emits `<slug>-profile.json`, `<slug>-digest.json`, and
    `<slug>-config.json`.
 3. **Audit the profile output.** The profiler prints to stderr:
-   - **Layout count and categories** — confirm it found title, content,
+   - **Layout count and categories**: confirm it found title, content,
      column/grid, and contact layouts. A template with only 1–2 usable layouts
      will produce monotonous decks; warn the user.
-   - **Signature collisions** — layouts with identical placeholder signatures
+   - **Signature collisions**: layouts with identical placeholder signatures
      are ambiguous. Note them; the generator picks the first match, which may
      not be the intended one.
 4. **Inspect the generated config** (`<slug>-config.json`). Check that
    `content_type_routing` keys (title_slide, comparison, framework_3col,
    table, …) resolve to sensible `layout_mappings`. If the auto-inference
-   missed a mapping (e.g. no `column_3` found), say so explicitly — the user
+   missed a mapping (e.g. no `column_3` found), say so explicitly, the user
    may need a template with more layouts, or to hand-edit the config.
 5. **Smoke test** so the user sees real output. Write a tiny throwaway outline
    (the bundled `examples/` folder is NOT present in an installed skill, so
@@ -90,7 +90,7 @@ Return:
 
 - NEVER overwrite an existing `templates/default*.pptx` or config without
   confirming with the user first.
-- NEVER claim the template is ready if the smoke test failed — report the error
+- NEVER claim the template is ready if the smoke test failed, report the error
   and what to fix.
 - If the template yields fewer than ~4 distinct content layouts, flag that
   variety will be limited rather than pretending it's fully capable.

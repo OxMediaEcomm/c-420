@@ -9,18 +9,18 @@ description: >-
   presentation", "slides for…", "use my company template", "fix slide N".
 ---
 
-# PPTX from Layouts — Step 3: Render
+# PPTX from Layouts: Step 3: Render
 
 Generate consultant-ready PowerPoint presentations from markdown outlines by
 filling the template's actual slide-master layouts. **Core thesis: use the
-template's layouts and placeholders — never overlay text boxes on slides.**
+template's layouts and placeholders, never overlay text boxes on slides.**
 
 ## The 3-step pipeline
 
 This skill is **Step 3** of a three-skill pipeline. Each step is its own skill:
 
 ```text
-  STEP 1 — PROFILE          STEP 2 — AUTHOR           STEP 3 — RENDER  ◀ you are here
+  STEP 1, PROFILE          STEP 2, AUTHOR           STEP 3, RENDER  ◀ you are here
   pptx-profile              pptx-author               pptx-from-layouts
   ───────────────           ───────────────           ─────────────────
   your-template.pptx        slides.md (+ [HINT:])     slides.md + config
@@ -32,16 +32,16 @@ This skill is **Step 3** of a three-skill pipeline. Each step is its own skill:
    have?"                    name real layouts"        actual placeholders"
 ```
 
-- **Step 1 — `pptx-profile`:** `catalog.py` turns a `.pptx` into a layout catalog
+- **Step 1, `pptx-profile`:** `catalog.py` turns a `.pptx` into a layout catalog
   (the menu of `[HINT:]` names) + a render `config.json`. One-time per template.
-- **Step 2 — `pptx-author`:** write `slides.md` with `[HINT: layout_name]` per
+- **Step 2, `pptx-author`:** write `slides.md` with `[HINT: layout_name]` per
   slide, then `lint_hints.py` validates the hints against the catalog.
-- **Step 3 — this skill:** `generate.py` fills the named layouts and validates.
+- **Step 3, this skill:** `generate.py` fills the named layouts and validates.
 
 You can also start here directly with the bundled **Inner Chapter** template (no
-Step 1 needed) — it's the default and the running example throughout this doc.
+Step 1 needed), it's the default and the running example throughout this doc.
 
-### `[HINT:]` — author against real layouts
+### `[HINT:]`: author against real layouts
 
 A slide can name the exact template layout it should render on:
 
@@ -54,11 +54,11 @@ A slide can name the exact template layout it should render on:
 ```
 
 `[HINT:]` resolves against the **active** template config (from Step 1), so it
-works for *any* profiled template — not just Inner Chapter. It's equivalent to
+works for *any* profiled template, not just Inner Chapter. It's equivalent to
 the `**Layout:**` marker, and takes precedence over `**Visual:**`. Use `[HINT:]`
 when you know the layout (precise); use `**Visual:**` when you want the engine to
 auto-pick one for a semantic intent (e.g. `process-4-phase`). Mismatched hints
-fall back to auto-detection with a warning — so lint in Step 2 first.
+fall back to auto-detection with a warning, so lint in Step 2 first.
 
 ## Dependencies (check first)
 
@@ -80,7 +80,7 @@ with `python`.
 | A deck and they already wrote an outline | `generate.py` → validate |
 | To use **their own** PowerPoint as the template | Delegate to **`pptx-template-onboarder`** (one-time setup) |
 | Small text fixes / reorder on an existing deck (<30% slides) | `edit.py` (inventory → replace / reorder) |
-| Layout changes, added/removed slides, or >30% churn | Regenerate via `generate.py` — **never** edit |
+| Layout changes, added/removed slides, or >30% churn | Regenerate via `generate.py`: **never** edit |
 | To know if a deck is good | Delegate to **`pptx-deck-qa`** or run `validate.py` |
 
 ## Mandatory generation workflow (do not skip steps)
@@ -89,7 +89,7 @@ with `python`.
    it once (see *Bring your own template* below). Otherwise the bundled Inner
    Chapter template is the default.
 2. **Produce an outline** with a `**Visual: <type>**` declaration on EVERY
-   content slide. Choose visual types with the decision order below — do not
+   content slide. Choose visual types with the decision order below, do not
    default everything to bullets.
 3. **Generate:**
    ```bash
@@ -109,7 +109,7 @@ with `python`.
       process flows, bullets for comparisons, …).
 - [ ] You reported the validation score and file path, not just "done".
 
-If any box is unchecked, the task is not finished — fix it or say explicitly
+If any box is unchecked, the task is not finished, fix it or say explicitly
 what blocked you.
 
 ## Subagents
@@ -150,7 +150,7 @@ python scripts/profile.py template.pptx --name my-template --generate-config
 ## Bring your own template (one-time, then automate forever)
 
 The bundled template is only a demo. To make on-brand decks, onboard your own
-`.pptx` **once** — profile it, generate its layout-mapping config, smoke-test,
+`.pptx` **once**: profile it, generate its layout-mapping config, smoke-test,
 and reuse it for every future deck.
 
 ```bash
@@ -177,7 +177,7 @@ Declare in outlines with `**Visual: type-name**`.
 | `hero-statement` | Single punchy statement ONLY |
 | `timeline-horizontal` | Date-based sequences |
 | `table` | Genuinely tabular data |
-| `bullets` | Default (3+ items) — last resort |
+| `bullets` | Default (3+ items), last resort |
 
 **Decision order:** sequence → comparison → parallel items → data contrast →
 quote → table → hero → bullets. Full reference + per-type length limits:
@@ -224,7 +224,7 @@ Transforming operations through digital innovation
 ## Edit workflow
 
 ```bash
-# 1. Dump the inventory — this is the schema replace.py consumes
+# 1. Dump the inventory: this is the schema replace.py consumes
 python scripts/edit.py project.pptx --inventory -o inv.json
 # 2. Open inv.json, find the target paragraph, change only its "text" field.
 #    e.g. inv.json["slide-2"]["shape-3"]["paragraphs"][0]["text"] = "Q2 2026"
@@ -246,14 +246,14 @@ python scripts/validate.py updated.pptx
 
 ## Anti-Patterns (FORBIDDEN)
 
-- DON'T skip the `**Visual:**` declaration — the parser default may not match.
-- DON'T default to bullets when a richer visual type fits — bullets are the
+- DON'T skip the `**Visual:**` declaration, the parser default may not match.
+- DON'T default to bullets when a richer visual type fits, bullets are the
   last resort, not the reflex.
 - DON'T use `hero-statement` for 3+ items or multi-sentence content.
 - DON'T use tables for methodology/process flows (use `process-N-phase`).
 - DON'T use bullet lists for side-by-side comparisons (use `comparison-N`).
-- DON'T use edit mode for layout changes or to add/remove slides — regenerate.
-- DON'T edit > 30% of slides — regenerate instead.
+- DON'T use edit mode for layout changes or to add/remove slides, regenerate.
+- DON'T edit > 30% of slides, regenerate instead.
 - DON'T claim success without a clean validation pass.
 
 ## See Also

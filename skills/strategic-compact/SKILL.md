@@ -17,12 +17,12 @@ Suggests manual `/compact` at strategic points in your workflow rather than rely
 
 ## Why Strategic Compaction?
 
-Auto-compaction triggers at arbitrary points — often mid-task, losing important context with no awareness of logical task boundaries.
+Auto-compaction triggers at arbitrary points, often mid-task, losing important context with no awareness of logical task boundaries.
 
 Strategic compaction at logical boundaries:
-- **After exploration, before execution** — Compact research context, keep implementation plan
-- **After completing a milestone** — Fresh start for next phase
-- **Before major context shifts** — Clear exploration context before different task
+- **After exploration, before execution**: Compact research context, keep implementation plan
+- **After completing a milestone**: Fresh start for next phase
+- **Before major context shifts**: Clear exploration context before different task
 
 ## Compaction Decision Guide
 
@@ -47,20 +47,20 @@ Strategic compaction at logical boundaries:
 
 ## Best Practices
 
-1. **Compact after planning** — Once plan is finalized, compact to start fresh for implementation
-2. **Compact after debugging** — Clear error-resolution context before continuing
-3. **Don't compact mid-implementation** — Preserve context for related changes
-4. **Write before compacting** — Save important context to files or memory before compacting
-5. **Use `/compact` with a summary** — Add a custom message: `/compact Focus on implementing auth middleware next`
+1. **Compact after planning**: Once plan is finalized, compact to start fresh for implementation
+2. **Compact after debugging**: Clear error-resolution context before continuing
+3. **Don't compact mid-implementation**: Preserve context for related changes
+4. **Write before compacting**: Save important context to files or memory before compacting
+5. **Use `/compact` with a summary**: Add a custom message: `/compact Focus on implementing auth middleware next`
 
 ## Token Optimization Patterns
 
 ### Context Composition Awareness
 Monitor what's consuming your context window:
-- **CLAUDE.md files** — Always loaded, keep lean
-- **Loaded skills** — Each skill adds 1-5K tokens
-- **Conversation history** — Grows with each exchange
-- **Tool results** — File reads, search results add bulk
+- **CLAUDE.md files**: Always loaded, keep lean
+- **Loaded skills**: Each skill adds 1-5K tokens
+- **Conversation history**: Grows with each exchange
+- **Tool results**: File reads, search results add bulk
 
 ### Duplicate Instruction Detection
 Common sources of duplicate context:

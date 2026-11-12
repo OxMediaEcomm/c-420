@@ -18,8 +18,8 @@ The goal isn't to hand you a finished product, it's to hand you a running start.
 
 ## Getting started
 
-1. Clone this repo somewhere, or copy its contents into `~/.claude/` (user-level, applies everywhere) or `.claude/` inside a specific project (project-level, applies there only).
-2. Copy `.env.example` to `.env` (or just export the variables in your shell profile) and fill in your own paths. See that file for what each one is for.
+1. Clone this repo and run `./setup.sh`. It installs into `~/.claude/` (user-level) or `./.claude/` (project-level), backs up anything it would overwrite into `.c420-backup-<timestamp>/`, and fills your real paths into `settings.json`.
+2. Put your secrets (`TWENTYFIRST_API_KEY`, `SUPABASE_ACCESS_TOKEN`) in your shell profile or, on Windows, with `setx`. Claude Code does not read `.env` files. `.env.example` lists every variable and where it goes.
 3. Open `CLAUDE.md` and replace the example "Project Locations" table with your own projects, or delete it.
 4. Read **`CUSTOMIZING.md`** for how the whole system fits together, and what to do first.
 
@@ -29,4 +29,4 @@ Most of what's valuable in a config like this isn't the skill count, it's the pa
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See `LICENSE`. Bundled third-party skills keep their own MIT notices, listed in `THIRD_PARTY_NOTICES.md`.

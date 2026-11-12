@@ -1,7 +1,7 @@
 # Bring Your Own Template
 
 Use your own PowerPoint as the template once; generate on-brand decks with one
-command forever after. This is the highest-leverage thing a new user can do —
+command forever after. This is the highest-leverage thing a new user can do -
 the bundled Inner Chapter template is only a demo.
 
 ## The mental model
@@ -57,11 +57,11 @@ cp $SKILL/templates/your-template-config.json $SKILL/templates/default-config.js
 
 Open `your-template-config.json` and sanity-check two sections:
 
-- `layout_mappings` — each capability (`title_cover`, `column_3`,
+- `layout_mappings`: each capability (`title_cover`, `column_3`,
   `content_with_image`, `grid_3x2_3body`, …) points at a real layout index.
   Missing keys mean the profiler couldn't find a matching layout in your
   template.
-- `content_type_routing` — maps semantic content types to those capabilities.
+- `content_type_routing`: maps semantic content types to those capabilities.
   If `comparison` routes somewhere odd, your template may lack a 2-column
   layout.
 

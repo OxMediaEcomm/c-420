@@ -18,7 +18,7 @@ Promoted to CLAUDE.md auto-trigger table at seen:3.
 
 ## Corrections Log
 
-_Empty — no corrections recorded yet._
+_Empty, no corrections recorded yet._
 
 ---
 

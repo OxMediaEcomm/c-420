@@ -41,7 +41,7 @@ And update `MEMORY.md` index if this is the first write.
 ```markdown
 ---
 name: session snapshot
-description: Auto-saved session state — what was done, what's next
+description: Auto-saved session state, what was done, what's next
 type: project
 ---
 
@@ -49,7 +49,7 @@ type: project
 [exact path] | [tech stack, 1 line]
 
 ## Done This Session
-- [caveman bullet — what changed, file path]
+- [caveman bullet, what changed, file path]
 - [caveman bullet]
 
 ## NOT Done / Next
@@ -60,16 +60,16 @@ type: project
 - [any arch/design decision made]
 
 ## Modified Files
-- `path/to/file.js` — [what changed]
+- `path/to/file.js`: [what changed]
 ```
 
 ## Rules
 
 - Caveman style: no filler, fragments OK, technical terms exact
 - Always include exact file paths
-- "Next" section is MOST important — this is what gets lost between sessions
+- "Next" section is MOST important, this is what gets lost between sessions
 - Overwrite same file every time (not append, not new file)
-- Never skip a threshold — context creep is the enemy
+- Never skip a threshold, context creep is the enemy
 - If context hits 95%, also say: "YO context almost dead. /compact or new session now."
 
 ## Auto-Trigger From CLAUDE.md

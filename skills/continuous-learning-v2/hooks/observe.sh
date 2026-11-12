@@ -213,16 +213,26 @@ try:
     tool_use_id = data.get("tool_use_id", "")
     cwd = data.get("cwd", "")
 
-    # Truncate large inputs/outputs
-    if isinstance(tool_input, dict):
-        tool_input_str = json.dumps(tool_input)[:5000]
-    else:
-        tool_input_str = str(tool_input)[:5000]
+    # Record the SHAPE of a tool call, never its payload.
+    # Tool output (fetched web pages, file contents, command output) is untrusted
+    # text; persisting it lets a hostile page steer future sessions via instincts.
+    # Inputs keep their keys, with each string value capped short.
+    INPUT_VALUE_CAP = 200
 
-    if isinstance(tool_output, dict):
-        tool_response_str = json.dumps(tool_output)[:5000]
-    else:
-        tool_response_str = str(tool_output)[:5000]
+    def summarize_input(value):
+        if isinstance(value, dict):
+            return {k: summarize_input(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [summarize_input(v) for v in value[:10]]
+        if isinstance(value, str) and len(value) > INPUT_VALUE_CAP:
+            return value[:INPUT_VALUE_CAP] + "...[+%d chars]" % (len(value) - INPUT_VALUE_CAP)
+        return value
+
+    tool_input_str = json.dumps(summarize_input(tool_input))[:2000]
+
+    output_text = json.dumps(tool_output) if isinstance(tool_output, (dict, list)) else str(tool_output)
+    is_error = isinstance(tool_output, dict) and bool(tool_output.get("is_error") or tool_output.get("error"))
+    tool_response_str = json.dumps({"ok": not is_error, "chars": len(output_text)})
 
     print(json.dumps({
         "parsed": True,
@@ -255,9 +265,10 @@ _SECRET_RE = re.compile(
     r"([A-Za-z0-9_\-/.+=]{8,})"
 )
 
-raw = sys.stdin.read()[:2000]
-raw = _SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + (m.group(3) or "") + "[REDACTED]", raw)
-print(json.dumps({"timestamp": os.environ["TIMESTAMP"], "event": "parse_error", "raw": raw}))
+# Log only the size of the unparseable payload: it may contain tool output,
+# which must never be persisted (see the parser above).
+raw = sys.stdin.read()
+print(json.dumps({"timestamp": os.environ["TIMESTAMP"], "event": "parse_error", "raw_chars": len(raw)}))
 ' >> "$OBSERVATIONS_FILE"
   exit 0
 fi
@@ -302,10 +313,24 @@ _SECRET_RE = re.compile(
     r"([A-Za-z0-9_\-/.+=]{8,})"
 )
 
+# Bare tokens with no key= prefix: vendor-prefixed keys, JWTs, and any long
+# base64/hex run (catches base64-encoded secrets the key=value rule misses).
+_BARE_TOKEN_RE = re.compile(
+    r"(sk-[A-Za-z0-9_\-]{20,}"
+    r"|gh[pousr]_[A-Za-z0-9]{20,}"
+    r"|github_pat_[A-Za-z0-9_]{20,}"
+    r"|xox[abposr]-[A-Za-z0-9\-]{10,}"
+    r"|AKIA[0-9A-Z]{16}"
+    r"|AIza[0-9A-Za-z_\-]{30,}"
+    r"|eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}"
+    r"|[A-Za-z0-9+/_\-]{40,}={0,2})"
+)
+
 def scrub(val):
     if val is None:
         return None
-    return _SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + (m.group(3) or "") + "[REDACTED]", str(val))
+    text = _SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + (m.group(3) or "") + "[REDACTED]", str(val))
+    return _BARE_TOKEN_RE.sub("[REDACTED]", text)
 
 if parsed["input"]:
     observation["input"] = scrub(parsed["input"])
