@@ -16,6 +16,9 @@ Located in `~/.claude/agents/`:
 | refactor-cleaner | Dead code cleanup | Code maintenance |
 | doc-updater | Documentation | Updating docs |
 | rust-reviewer | Rust code review | Rust projects |
+| ultron (Opus) | Design decisions, DESIGN_SPEC.md | Start of any site/frontend build |
+| jarvis (Sonnet) | Implementation leg work | After the spec exists |
+| stress-tester (Opus) | Adversarial QA | After a build, before ship |
 
 ## Immediate Agent Usage
 

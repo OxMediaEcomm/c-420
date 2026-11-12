@@ -84,6 +84,14 @@ copy_dir "commands"
 copy_dir "rules"
 copy_dir "hooks"
 copy_dir "mcp-servers"
+copy_dir "scripts"
+
+# memory/ holds the user's own memory once installed: seed only, never overwrite.
+mkdir -p "$TARGET_DIR/memory"
+if [ ! -f "$TARGET_DIR/memory/learned-triggers.md" ] && [ -f "$SOURCE_DIR/memory/learned-triggers.md" ]; then
+  cp "$SOURCE_DIR/memory/learned-triggers.md" "$TARGET_DIR/memory/learned-triggers.md"
+  echo "  seeded memory/learned-triggers.md"
+fi
 
 # --- 3. copy settings.json, statusline.sh, CLAUDE.md -------------------------
 echo ""
@@ -127,6 +135,11 @@ if [ -f "$SOURCE_DIR/statusline.sh" ]; then
   cp "$SOURCE_DIR/statusline.sh" "$TARGET_DIR/statusline.sh"
   chmod +x "$TARGET_DIR/statusline.sh"
   echo "  statusline.sh -> $TARGET_DIR/statusline.sh"
+fi
+
+if [ -f "$SOURCE_DIR/statusline.mjs" ]; then
+  cp "$SOURCE_DIR/statusline.mjs" "$TARGET_DIR/statusline.mjs"
+  echo "  statusline.mjs -> $TARGET_DIR/statusline.mjs"
 fi
 
 if [ -f "$SOURCE_DIR/CLAUDE.md" ]; then

@@ -1,6 +1,7 @@
 {
-  "model": "claude-sonnet-5",
+  "model": "claude-sonnet-5-5",
   "effortLevel": "medium",
+  "autoMemoryDirectory": "__C420_HOME__/memory",
   "env": {
     "C420_HOME": "__C420_HOME__",
     "PROJECTS_ROOT": "__PROJECTS_ROOT__",
