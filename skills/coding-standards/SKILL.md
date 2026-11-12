@@ -251,7 +251,7 @@ if (retryCount > MAX_RETRIES) { }
 
 ## When to Comment
 
-Only when WHY is non-obvious. Never state what the code does — that's what names are for.
+Only when WHY is non-obvious. Never state what the code does, that's what names are for.
 
 ```typescript
 // GOOD: Explain WHY

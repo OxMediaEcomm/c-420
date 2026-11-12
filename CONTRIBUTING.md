@@ -30,7 +30,9 @@ There is no build step and no test suite; this repo is configuration and documen
 This repo follows the conventions it documents:
 
 - No em-dashes anywhere (commit messages, docs, skills, everything). Use a comma, colon, parenthesis, semicolon, or a new sentence instead.
-- No hardcoded secrets, absolute personal paths, or real credentials in any tracked file. Use the `${VAR}`-style placeholders already established in `.env.example`, `settings.json`, and `CLAUDE.md`.
+- No hardcoded secrets, absolute personal paths, or real credentials in any tracked file. Use the `__C420_HOME__` / `__PROJECTS_ROOT__` placeholders in `settings.json` (filled in by `setup.sh`) and the `${VAR}` placeholders in `CLAUDE.md`.
+- Run `sh scripts/check.sh` before committing. It fails on em-dashes in C-420's own files and on invalid `settings.json`.
+- Any skill copied from another project needs an `origin:` frontmatter field and, if its license requires it, an entry in `THIRD_PARTY_NOTICES.md`. Never add skills under a proprietary license.
 - Skills follow the existing `SKILL.md` frontmatter + description pattern used throughout `skills/`. See `CUSTOMIZING.md` for the format.
 - Keep `CLAUDE.md` itself lean. It's loaded on every session; don't let it sprawl.
 

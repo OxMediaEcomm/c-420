@@ -41,9 +41,9 @@ Turn any folder of files into a navigable knowledge graph with community detecti
 ## What graphify is for
 
 Three things it does that your AI assistant alone cannot:
-1. **Persistent graph** — relationships stored in `graphify-out/graph.json`, survive across sessions
-2. **Honest audit trail** — every edge tagged EXTRACTED, INFERRED, or AMBIGUOUS
-3. **Cross-document surprise** — community detection finds connections between files you'd never think to ask about
+1. **Persistent graph**: relationships stored in `graphify-out/graph.json`, survive across sessions
+2. **Honest audit trail**: every edge tagged EXTRACTED, INFERRED, or AMBIGUOUS
+3. **Cross-document surprise**: community detection finds connections between files you'd never think to ask about
 
 Use it for:
 - A codebase you're new to (understand architecture before touching anything)
@@ -90,7 +90,7 @@ Corpus: X files · ~Y words
 
 Run AST extraction (code files) and semantic extraction (docs/papers/images) in parallel.
 
-Semantic extraction uses the Agent tool — dispatch ALL subagents in a single message for parallelism. Each subagent extracts nodes and edges from a chunk of files (20-25 files each).
+Semantic extraction uses the Agent tool, dispatch ALL subagents in a single message for parallelism. Each subagent extracts nodes and edges from a chunk of files (20-25 files each).
 
 Each edge gets tagged: EXTRACTED (explicit), INFERRED (reasonable), or AMBIGUOUS (uncertain).
 confidence_score required on every edge: EXTRACTED=1.0, INFERRED=0.6-0.9, AMBIGUOUS=0.1-0.3.
@@ -165,7 +165,7 @@ Find shortest path between two named concepts. Explain each hop in plain languag
 
 ## For /graphify explain
 
-Give a 3-5 sentence explanation of a node — what it is, what connects to it, why those connections matter.
+Give a 3-5 sentence explanation of a node, what it is, what connects to it, why those connections matter.
 
 ## For /graphify add
 
@@ -185,8 +185,8 @@ Merge two separate `graphify-out/graph.json` files into one combined graph.
 
 **Steps:**
 1. Load both `graph.json` files
-2. Union nodes — if two nodes share the same label (case-insensitive), merge them into one node with `"sources": ["path1", "path2"]`
-3. Union edges — duplicate edges (same source+target+relation) get their `weight` increased by 1 rather than duplicated
+2. Union nodes, if two nodes share the same label (case-insensitive), merge them into one node with `"sources": ["path1", "path2"]`
+3. Union edges, duplicate edges (same source+target+relation) get their `weight` increased by 1 rather than duplicated
 4. Re-run community detection on the merged graph
 5. Save merged graph to `--out` path (default: `./graphify-merged/`)
 6. Report: N nodes merged, M new edges added, K communities found
@@ -200,11 +200,11 @@ Merge two separate `graphify-out/graph.json` files into one combined graph.
 Compare two graph snapshots to see what changed.
 
 **Output (`graphify-out/DIFF_REPORT.md`):**
-- **Nodes added** — present in new-graph, absent in old
-- **Nodes removed** — present in old-graph, absent in new
-- **Edges added / removed** — new or deleted connections
-- **Community membership changes** — nodes that moved between communities
-- **God node rank changes** — top-degree nodes that rose or fell
+- **Nodes added**: present in new-graph, absent in old
+- **Nodes removed**: present in old-graph, absent in new
+- **Edges added / removed**: new or deleted connections
+- **Community membership changes**: nodes that moved between communities
+- **God node rank changes**: top-degree nodes that rose or fell
 
 **Use case:** Run graphify after a sprint, diff against last week's snapshot. See which concepts emerged or died.
 
@@ -247,12 +247,12 @@ Find and optionally merge nodes that refer to the same concept under different n
 **Steps:**
 1. Compute fuzzy similarity (SequenceMatcher or rapidfuzz) between all node labels
 2. Flag pairs above `--threshold` (default 0.85) as dedup candidates
-3. `--dry-run`: print candidate list only — no changes made
+3. `--dry-run`: print candidate list only, no changes made
 4. Without `--dry-run`: for each candidate pair, show both node's connections, prompt confirmation, then merge (redirect all edges to canonical node, delete duplicate)
 
 **Output:** `graphify-out/DEDUP_REPORT.md` listing all merged pairs and redirected edges.
 
-**Example candidates:** "Auth Module" / "auth_handler" / "Authentication" — one survives, others redirect.
+**Example candidates:** "Auth Module" / "auth_handler" / "Authentication", one survives, others redirect.
 
 ---
 
@@ -262,4 +262,4 @@ When a user clicks a node in the HTML graph, show its path from the nearest god 
 
 **Behavior:** On node click, run BFS from the nearest top-10 degree node. Highlight the path in the graph and show a breadcrumb: `AuthModule → SessionManager → CookieHandler (you are here)`.
 
-**Implementation note:** Add to the HTML template's node-click handler — BFS on the adjacency list already embedded in the HTML, highlight edges along the path, show breadcrumb text above the node info panel.
+**Implementation note:** Add to the HTML template's node-click handler, BFS on the adjacency list already embedded in the HTML, highlight edges along the path, show breadcrumb text above the node info panel.

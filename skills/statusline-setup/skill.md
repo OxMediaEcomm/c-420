@@ -96,7 +96,7 @@ The command receives this JSON via stdin:
 ## Script Rules
 
 - Use `printf` when ANSI color codes are present
-- Do NOT remove colors — status line renders in terminal with dimmed colors
+- Do NOT remove colors, status line renders in terminal with dimmed colors
 - Remove trailing `$` or `>` characters from PS1-derived output
 - If git commands are included, use `-c core.hooksPath=/dev/null` or `--no-optional-locks` to skip locks
 - Store JSON input in a variable: `input=$(cat)`
@@ -107,7 +107,7 @@ The command receives this JSON via stdin:
 
 - Read `~/.claude/settings.json` first
 - If it is a symlink, update the target file
-- Preserve all existing settings — only add/update the `statusLine` key
+- Preserve all existing settings, only add/update the `statusLine` key
 - Output format:
 
 ```json

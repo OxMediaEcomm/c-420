@@ -1,9 +1,17 @@
 {
   "model": "claude-sonnet-5",
   "effortLevel": "medium",
+  "env": {
+    "C420_HOME": "__C420_HOME__",
+    "PROJECTS_ROOT": "__PROJECTS_ROOT__",
+    "MEMORY_SNAPSHOT_PATH": "__C420_HOME__/memory/last_session.md",
+    "C420_CONTEXT_WINDOW": "200000",
+    "STATUSLINE_NAME": "Your Name",
+    "STATUSLINE_EMAIL": "you@your-domain.com"
+  },
   "statusLine": {
     "type": "command",
-    "command": "bash ${CLAUDE_CONFIG_DIR}/statusline.sh",
+    "command": "bash __C420_HOME__/statusline.sh",
     "padding": 0
   },
   "hooks": {
@@ -12,7 +20,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_CONFIG_DIR}/hooks/session-end.sh"
+            "command": "bash __C420_HOME__/hooks/session-end.sh"
           }
         ]
       }
@@ -23,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_CONFIG_DIR}/skills/continuous-learning-v2/hooks/observe.sh pre"
+            "command": "bash __C420_HOME__/skills/continuous-learning-v2/hooks/observe.sh pre"
           }
         ]
       }
@@ -34,11 +42,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_CONFIG_DIR}/skills/continuous-learning-v2/hooks/observe.sh post"
+            "command": "bash __C420_HOME__/skills/continuous-learning-v2/hooks/observe.sh post"
           },
           {
             "type": "command",
-            "command": "node ${CLAUDE_CONFIG_DIR}/hooks/context-guard.mjs"
+            "command": "node __C420_HOME__/hooks/context-guard.mjs"
           }
         ]
       }
@@ -51,25 +59,34 @@
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"],
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
       "type": "stdio"
     },
     "magicui": {
       "command": "npx",
-      "args": ["-y", "@magicuidesign/mcp@latest"],
+      "args": [
+        "-y",
+        "@magicuidesign/mcp@latest"
+      ],
       "type": "stdio"
     },
     "puppeteer": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ],
       "type": "stdio"
     },
     "21st-dev": {
-      "command": "${CLAUDE_CONFIG_DIR}/mcp-servers/21st-magic-wrapper.cmd",
+      "command": "__C420_HOME__/mcp-servers/21st-magic-wrapper.cmd",
       "type": "stdio"
     },
     "supabase": {
-      "command": "${CLAUDE_CONFIG_DIR}/mcp-servers/supabase-mcp-wrapper.cmd",
+      "command": "__C420_HOME__/mcp-servers/supabase-mcp-wrapper.cmd",
       "type": "stdio"
     }
   }

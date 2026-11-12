@@ -13,7 +13,9 @@ This repo is a starting point, not a fixed product. Here's how the pieces fit to
 
 ## Pruning vs. keeping everything
 
-You don't have to remove skills you're not using, Claude only loads a skill's full content when its description matches what you're doing, so an unused skill just sits there at near-zero cost. If you want a leaner footprint anyway (fewer options to scroll through, smaller `skills/` directory), delete what's clearly off-stack for you, e.g. if you never touch Go, Rust, or Swift, remove those skill folders and the matching `rules/` entries.
+Unused skills are not free. Claude only loads a skill's full body when it's relevant, but every skill's **description** loads into every session so Claude knows the skill exists. Across the 252 skills shipped here that's about 73,000 characters (roughly 18,000 tokens) of context spent before you type anything, and a long list also makes it harder for Claude to pick the right skill.
+
+So prune. Delete whatever is clearly off-stack for you: if you never touch Go, Rust, Swift, Kotlin, Laravel, or healthcare systems, remove those skill folders and the matching `rules/` entries. Trimming to the 30 to 60 skills you actually use is a reasonable target. The `agent-sort` and `skill-stocktake` skills can help you decide.
 
 ## Adding your own skills
 
@@ -43,7 +45,9 @@ Or skip it entirely and write your own, the file is a template, not a requiremen
 
 ## Hooks and settings
 
-`settings.json` wires up the statusline and a couple of hooks (`hooks/context-guard.mjs` for context-usage warnings, `hooks/session-end.sh` for session-end snapshotting). Both hook scripts read their file paths from environment variables with safe fallbacks, if you move things around, update `.env.example` and your own `.env` to match, don't hardcode a new absolute path back in.
+`settings.json` wires up the statusline and a couple of hooks (`hooks/context-guard.mjs` for context-usage warnings, `hooks/session-end.sh` for session-end snapshotting). Hook paths are written as `__C420_HOME__` in the repo and replaced with your real install path by `setup.sh`. Non-secret settings (memory path, context window size, statusline identity) live in the `env` block of `settings.json`, which Claude Code loads into every session and hook. Claude Code never reads a `.env` file, so don't put anything there and expect it to work.
+
+If you run a 1M-context model, set `C420_CONTEXT_WINDOW` to `1000000` in that `env` block, or the context guard will warn far too early.
 
 ## MCP servers
 

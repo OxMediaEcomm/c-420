@@ -17,9 +17,9 @@ Ensures all code development follows TDD principles with comprehensive test cove
 
 ## Core Principles
 
-1. **Tests BEFORE Code** — Always write tests first, then implement code to make tests pass
-2. **Coverage Requirements** — Minimum 80% (unit + integration + E2E), all edge cases covered
-3. **Three test types** — Unit (functions/logic), Integration (APIs/DB), E2E (user flows)
+1. **Tests BEFORE Code**: Always write tests first, then implement code to make tests pass
+2. **Coverage Requirements**: Minimum 80% (unit + integration + E2E), all edge cases covered
+3. **Three test types**: Unit (functions/logic), Integration (APIs/DB), E2E (user flows)
 
 ## TDD Workflow Steps
 
@@ -40,7 +40,7 @@ describe('Feature', () => {
 
 ### Step 3: Run Tests (They Should FAIL)
 ```bash
-npm test   # tests should fail — nothing implemented yet
+npm test   # tests should fail, nothing implemented yet
 ```
 
 ### Step 4: Implement Code
