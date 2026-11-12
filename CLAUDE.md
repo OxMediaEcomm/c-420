@@ -1,6 +1,6 @@
 # C-420 Claude Code Config
 
-**Default Model: Sonnet.** Always start sessions on Sonnet 5. Never launch with or default to Opus. User switches manually if needed.
+**Models.** Default to Sonnet 5.5 for everyday work. For design-heavy builds, run the main session on Opus 5.5 and let the `jarvis` (Sonnet) subagent do the leg work; see `c420-studio`. Never switch a session's model yourself; the user does it with /model.
 
 **No em-dashes, ever.** (This is the only place this rule lives; `scripts/check.sh` enforces it.) Not in chat replies, not in blog/article drafts, not in commit messages, not in code or docs. It slips most often in long-form content (articles, blog posts). Treat long-form prose as the highest-risk spot for this, and proofread for the em-dash character (U+2014) before sending. Use a comma, colon, parenthesis, semicolon, or a new sentence instead.
 
@@ -24,7 +24,9 @@ Full index with paths, URLs, GitHub remotes: memory `project_workspace.md` (alwa
 
 Replace this table with your own projects, or delete it if you don't need a fixed index.
 
-**Config vault:** `${C420_HOME}` (e.g. `C:\Users\YOUR_USERNAME\.claude\`): root `.claude` may be a symlink to this vault. Active memory store = `${CLAUDE_MEMORY_STORE}` only (configure your own name). Retire old stores you no longer use.
+**Config vault:** `${C420_HOME}` (e.g. `C:\Users\YOUR_USERNAME\.claude\`): root `.claude` may be a symlink to this vault. Auto-memory is pinned to `${C420_HOME}/memory` by `autoMemoryDirectory` in settings.json, so every session in every folder shares one store. Running several accounts? `scripts/link-accounts.mjs` links their skills, agents, memory, and peer registry back to this install (CUSTOMIZING.md, "Multiple accounts").
+
+**Remote:** `claude remote-control` (run in a project folder) lets the user drive the session from the Claude mobile app or claude.ai/code. When the user is likely away and a long task finishes, fails, or needs a decision, send a `PushNotification`. Not for routine progress.
 
 ---
 
@@ -95,6 +97,14 @@ Skills live in `${C420_HOME}\skills\`. They auto-trigger based on context: no sl
 | `brand-voice` | Source-derived voice profile for consistent writing |
 | `content-engine` | Social posts, threads, cross-platform content systems |
 | `article-writing` | Long-form content and blog posts |
+
+### Studio (Opus designs, Sonnet builds)
+| Skill / Agent | What It Does |
+|-------|-------------|
+| `c420-studio` | Orchestrates a full build: Ultron designs, Jarvis builds, stress tester breaks it, fix loop, gates. Also cross-session job handoff over peer messaging |
+| `ultron` agent (Opus) | Design brain: direction, palette, type, imagery, layout, motion, writes `DESIGN_SPEC.md` |
+| `jarvis` agent (Sonnet) | Builder: implements the spec frontend to backend, runs build/tests, never makes taste calls |
+| `stress-tester` agent (Opus) | Adversarial QA vs the spec, writes `qa/STRESS_REPORT.md` |
 
 ### Session Management
 | Skill | What It Does |
@@ -188,6 +198,11 @@ These fire automatically based on what's being worked on.
 | "deploy" / "Railway" / "Netlify" / "CI/CD" / "Docker" / "push to prod" | `deployment-patterns` |
 | "migration" / "RLS" / "schema change" / "Supabase table" | `database-migrations` + `security-review` |
 
+### Studio
+| Signal | Skill |
+|--------|-------|
+| "studio mode" / "build me a site" / "build the site" / "Ultron and Jarvis" / "Opus design, Sonnet build" / any new site or app build | `c420-studio` |
+
 ### Research & Content
 | Signal | Skill |
 |--------|-------|
@@ -226,7 +241,7 @@ Three distinct stores. Don't conflate them.
 - **Write here when:** user invents a new phrasing for a skill, or corrects a skill selection
 - Promote to the Auto-Trigger Rules tables once `seen:3` is hit
 
-### 2. Project / user / feedback / reference memory: `${CLAUDE_MEMORY_STORE_PATH}` (e.g. `~/.claude-memory-store/projects/<encoded-cwd>/memory/`)
+### 2. Project / user / feedback / reference memory: `${C420_HOME}/memory/` (pinned via `autoMemoryDirectory`)
 - The auto-memory system (managed by the harness). Indexed by `MEMORY.md`, individual files per memory
 - **Write here when:** you learn something about the user, a project, a workflow preference, or an external reference (Linear board, Grafana dashboard, etc.)
 - Always read `last_session.md` first on "pick up", "resume", "where were we"
